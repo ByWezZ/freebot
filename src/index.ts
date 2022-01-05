@@ -21,7 +21,8 @@ class CommandManager {
 
             delete require.cache[commandFile];
 
-            let commandInfo: Command = require(`${__dirname}/commands/${commandFile}`);
+            const commandInfo: Command =
+                require(`${__dirname}/commands/${commandFile}`).command;
 
             client.commands.cache.set(commandInfo.names, commandInfo);
         }
