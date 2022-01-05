@@ -17,6 +17,8 @@ class CommandManager {
         let commands = await fs.readdir(__dirname + "/commands");
 
         for (let commandFile of commands) {
+            if (!commandFile.endsWith(".js")) continue;
+
             delete require.cache[commandFile];
 
             let commandInfo: Command = require(`${__dirname}/commands/${commandFile}`);
@@ -50,11 +52,11 @@ client.on("ready", async () => {
     let events = await fs.readdir(__dirname + "/events");
 
     for (let eventFile of events) {
-        if (eventFile.endsWith(".js")) {
-            const { run } = require(`${__dirname}/events/${eventFile}`);
+        if (!eventFile.endsWith(".js")) continue;
 
-            client.on(eventFile.split(".")[0], run.bind(null, client));
-        }
+        const { run } = require(`${__dirname}/events/${eventFile}`);
+
+        client.on(eventFile.split(".")[0], run.bind(null, client));
     }
 
     console.log("Bot started");
