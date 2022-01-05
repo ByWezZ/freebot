@@ -1,15 +1,15 @@
-import { Client, ClientOptions, User } from "discord.js";
+import { Client, ClientOptions, Collection, User } from "discord.js";
 import { promises as fs } from "fs";
 import config from "./config.json";
 
 import { Command } from "./Commands";
 
 class CommandManager {
-    cache: Map<String[], Command>;
+    cache: Collection<String[], Command>;
     members: Map<User, Command>;
 
     constructor() {
-        this.cache = new Map();
+        this.cache = new Collection();
         this.members = new Map();
     }
 
