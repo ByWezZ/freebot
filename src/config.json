@@ -1,3 +1,5 @@
 {
-    "token": "Your Token Goes Here"
+    "token": "Your Token Goes Here",
+
+    "prefix": "!"
 }
