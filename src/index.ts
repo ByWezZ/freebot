@@ -4,9 +4,26 @@ import config from "./config.json";
 
 import { Command } from "./Commands";
 
-interface CommandManager {
+class CommandManager {
     cache: Map<String[], Command>;
     members: Map<User, Command>;
+
+    constructor() {
+        this.cache = new Map();
+        this.members = new Map();
+    }
+
+    public async reload() {
+        let commands = await fs.readdir(__dirname + "/commands");
+
+        for (let commandFile of commands) {
+            delete require.cache[commandFile];
+
+            let commandInfo: Command = require(`${__dirname}/commands/${commandFile}`);
+
+            client.commands.cache.set(commandInfo.names, commandInfo);
+        }
+    }
 }
 
 class SuperClient extends Client {
@@ -15,14 +32,11 @@ class SuperClient extends Client {
     constructor(options: ClientOptions) {
         super(options);
 
-        this.commands = {
-            cache: new Map(),
-            members: new Map(),
-        };
+        this.commands = new CommandManager();
     }
 }
 
-const client: SuperClient = new SuperClient({
+const client = new SuperClient({
     intents: ["DIRECT_MESSAGES", "GUILDS", "GUILD_MEMBERS", "GUILD_MESSAGES"],
 });
 
@@ -30,21 +44,20 @@ const client: SuperClient = new SuperClient({
  * Handling events and commands
  */
 client.on("ready", async () => {
-    let commands = await fs.readdir(__dirname + "/commands");
-
-    for (let commandFile of commands) {
-        let commandInfo: Command = require(`${__dirname}/commands/${commandFile}`);
-
-        client.commands.cache.set(commandInfo.names, commandInfo);
-    }
+    // Loads all commands
+    client.commands.reload();
 
     let events = await fs.readdir(__dirname + "/events");
 
     for (let eventFile of events) {
-        let eventInfo = require(`${__dirname}/events/${eventFile}`);
+        if (eventFile.endsWith(".js")) {
+            const { run } = require(`${__dirname}/events/${eventFile}`);
 
-        client.on(eventFile.split(".")[0], eventInfo.run.bind(null, client));
+            client.on(eventFile.split(".")[0], run.bind(null, client));
+        }
     }
+
+    console.log("Bot started");
 });
 
 client.login(process.env.FREEBOT || config.token);
