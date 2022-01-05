@@ -26,7 +26,7 @@ class CommandManager {
     }
 }
 
-class SuperClient extends Client {
+export class SuperClient extends Client {
     commands: CommandManager;
 
     constructor(options: ClientOptions) {
