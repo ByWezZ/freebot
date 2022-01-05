@@ -1,19 +1,21 @@
 {
-  "name": "freebot",
-  "version": "1.0.0",
-  "description": "Freebot is a starter bot for anyone who want it, it is write in Typescript",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "bot",
-    "discord"
-  ],
-  "author": "ByWezZ",
-  "license": "ISC",
-  "dependencies": {
-    "dayjs": "^1.10.7",
-    "discord.js": "^13.5.0"
-  }
+    "name": "freebot",
+    "version": "1.0.0",
+    "description": "Freebot is a starter bot for anyone who want it, it is write in Typescript",
+    "main": "index.js",
+    "scripts": {
+        "start": "tsc | node dist/index.js",
+        "build": "tsc",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "bot",
+        "discord"
+    ],
+    "author": "ByWezZ",
+    "license": "ISC",
+    "dependencies": {
+        "dayjs": "^1.10.7",
+        "discord.js": "^13.5.0"
+    }
 }
