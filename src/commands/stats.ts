@@ -144,8 +144,6 @@ export const command: Command = {
         description: "Display bot's statistics",
     },
 
-    guildId: "598814767771156490",
-
     run: async (client, commandInt) => {
         statsFunction(client, commandInt, 0);
     },
