@@ -1,7 +1,8 @@
 import { BaseCommandInteraction, MessageEmbedOptions } from "discord.js";
 import { SuperClient } from "../bot";
 import { Command } from "../Command";
-import { globalInteractionDelay } from "../configs/config.json";
+import { globalInteractionDelay, colors } from "../configs/config.json";
+import path from "path";
 
 /**
  * @param {SuperClient} client The discord client
@@ -29,9 +30,35 @@ async function getEmbed(
         members: a.members + c.members,
     }));
 
+    const lang = require(path.normalize(
+        __dirname + "/../lang/fr/commands/stats"
+    )).default;
+
     return {
-        title: "Statistiques de " + client.user?.tag,
-        description: `__**Nombre de serveurs :**__ ${globalValues?.guilds}\n__**Nombre de membres :**__ ${globalValues?.members}`,
+        title: lang.embed.title.replaceAll(
+            "{{botName}}",
+            client.user?.tag || "Indéfini"
+        ),
+        description: lang.embed.description
+            ?.replaceAll(
+                "{{guilds}}",
+                globalValues?.guilds.toString() || "Indéfini"
+            )
+            .replaceAll(
+                "{{members}}",
+                globalValues?.members.toString() || "Indéfini"
+            ),
+        fields: values?.map((rV, i) => ({
+            name: `Shard #${i}`,
+            value: lang.embed.fields.value
+                ?.replaceAll("{{guilds}}", rV.guilds.toString() || "Indéfini")
+                .replaceAll("{{members}}", rV.members.toString() || "Indéfini"),
+            inline: true,
+        })),
+        thumbnail: {
+            url: client.user?.displayAvatarURL(),
+        },
+        color: [colors.embeds[0], colors.embeds[1], colors.embeds[2]],
         timestamp: new Date(),
         footer: {
             text: interaction.user.tag,
