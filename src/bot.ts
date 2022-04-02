@@ -71,8 +71,6 @@ client.on("ready", async () => {
             event.run.bind(null, client)
         );
     }
-
-    console.log("Bot started");
 });
 
 client.login(process.env.FREEBOT || config.token);
