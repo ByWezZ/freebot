@@ -111,7 +111,7 @@ async function statsFunction(
 
     let question = await (interaction.replied
         ? interaction.editReply(messageData)
-        : interaction.deferReply(messageData)
+        : interaction.reply(messageData)
     ).catch(() => undefined);
 
     if (question instanceof Message) {
