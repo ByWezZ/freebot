@@ -3,6 +3,7 @@ import { promises as fs } from "fs";
 import config from "./config.json";
 
 import { Command } from "./Command";
+import { DiscordEvent } from "./Event";
 
 class CommandManager {
     cache: Collection<String, Command>;
@@ -55,9 +56,15 @@ client.on("ready", async () => {
     for (let eventFile of events) {
         if (!eventFile.endsWith(".js")) continue;
 
-        const { run } = require(`${__dirname}/events/${eventFile}`);
+        const event: DiscordEvent =
+            require(`${__dirname}/events/${eventFile}`).event;
 
-        client.on(eventFile.split(".")[0], run.bind(null, client));
+        client.on(
+            typeof event.name === "string"
+                ? event.name
+                : eventFile.split(".")[0],
+            event.run.bind(null, client)
+        );
     }
 
     console.log("Bot started");
