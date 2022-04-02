@@ -2,10 +2,10 @@ import { Client, ClientOptions, Collection, User } from "discord.js";
 import { promises as fs } from "fs";
 import config from "./config.json";
 
-import { Command } from "./Commands";
+import { Command } from "./Command";
 
 class CommandManager {
-    cache: Collection<String[], Command>;
+    cache: Collection<String, Command>;
     members: Map<User, Command>;
 
     constructor() {
@@ -24,7 +24,7 @@ class CommandManager {
             const commandInfo: Command =
                 require(`${__dirname}/commands/${commandFile}`).command;
 
-            client.commands.cache.set(commandInfo.names, commandInfo);
+            client.commands.cache.set(commandInfo.infos.name, commandInfo);
         }
     }
 }
