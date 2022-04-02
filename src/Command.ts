@@ -3,7 +3,7 @@ import {
     ApplicationCommandData,
     BaseCommandInteraction,
 } from "discord.js";
-import { SuperClient } from ".";
+import { SuperClient } from "./bot";
 
 export interface Command {
     infos: ApplicationCommandData;

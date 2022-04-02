@@ -1,4 +1,4 @@
-import { SuperClient } from ".";
+import { SuperClient } from "./bot";
 
 export interface DiscordEvent {
     name?: String;
