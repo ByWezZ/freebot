@@ -25,6 +25,10 @@ class CommandManager {
             const commandInfo: Command =
                 require(`${__dirname}/commands/${commandFile}`).command;
 
+            commandInfo.appCommand = await client.application?.commands.create(
+                commandInfo.infos
+            );
+
             client.commands.cache.set(commandInfo.infos.name, commandInfo);
         }
     }
