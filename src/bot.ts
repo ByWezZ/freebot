@@ -1,6 +1,6 @@
 import { Client, ClientOptions, Collection, User } from "discord.js";
 import { promises as fs } from "fs";
-import config from "./config.json";
+import config from "./configs/config.json";
 
 import { Command } from "./Command";
 import { DiscordEvent } from "./Event";
