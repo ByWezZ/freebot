@@ -1,0 +1,9 @@
+{
+    "token": "Your Token Goes Here",
+
+    "globalInteractionDelay": 60000,
+
+    "colors": {
+        "embeds": [56, 95, 252]
+    }
+}
