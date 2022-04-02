@@ -1,4 +1,8 @@
-import { BaseCommandInteraction, MessageEmbedOptions } from "discord.js";
+import {
+    BaseCommandInteraction,
+    InteractionReplyOptions,
+    Message,
+} from "discord.js";
 import { SuperClient } from "../bot";
 import { Command } from "../Command";
 import { globalInteractionDelay, colors } from "../configs/config.json";
@@ -9,13 +13,12 @@ import path from "path";
  * @param {BaseCommandInteraction} interaction The interaction
  * @param {Number} page The page to display
  *
- * @returns {MessageEmbed} The embed corresponding to the page
  */
-async function getEmbed(
+async function statsFunction(
     client: SuperClient,
     interaction: BaseCommandInteraction,
-    page: Number
-): Promise<MessageEmbedOptions> {
+    page: number
+) {
     let values = await client.shard?.broadcastEval((client) => {
         return {
             guilds: client.guilds.cache.size,
@@ -34,37 +37,100 @@ async function getEmbed(
         __dirname + "/../lang/fr/commands/stats"
     )).default;
 
-    return {
-        title: lang.embed.title.replaceAll(
-            "{{botName}}",
-            client.user?.tag || "Indéfini"
-        ),
-        description: lang.embed.description
-            ?.replaceAll(
-                "{{guilds}}",
-                globalValues?.guilds.toString() || "Indéfini"
-            )
-            .replaceAll(
-                "{{members}}",
-                globalValues?.members.toString() || "Indéfini"
-            ),
-        fields: values?.map((rV, i) => ({
-            name: `Shard #${i}`,
-            value: lang.embed.fields.value
-                ?.replaceAll("{{guilds}}", rV.guilds.toString() || "Indéfini")
-                .replaceAll("{{members}}", rV.members.toString() || "Indéfini"),
-            inline: true,
-        })),
-        thumbnail: {
-            url: client.user?.displayAvatarURL(),
-        },
-        color: [colors.embeds[0], colors.embeds[1], colors.embeds[2]],
-        timestamp: new Date(),
-        footer: {
-            text: interaction.user.tag,
-            iconURL: interaction.user.displayAvatarURL(),
-        },
+    let messageData: InteractionReplyOptions = {
+        fetchReply: true,
+
+        embeds: [
+            {
+                title: lang.embed.title.replaceAll(
+                    "{{botName}}",
+                    client.user?.tag || "Indéfini"
+                ),
+                description: lang.embed.description
+                    ?.replaceAll(
+                        "{{guilds}}",
+                        globalValues?.guilds.toString() || "Indéfini"
+                    )
+                    .replaceAll(
+                        "{{members}}",
+                        globalValues?.members.toString() || "Indéfini"
+                    ),
+                fields: values
+                    ?.slice(page * 24, (page + 1) * 25)
+                    .map((rV, i) => ({
+                        name: `Shard #${i + page * 25}`,
+                        value: lang.embed.fields.value
+                            ?.replaceAll(
+                                "{{guilds}}",
+                                rV.guilds.toString() || "Indéfini"
+                            )
+                            .replaceAll(
+                                "{{members}}",
+                                rV.members.toString() || "Indéfini"
+                            ),
+                        inline: true,
+                    })),
+                thumbnail: {
+                    url: client.user?.displayAvatarURL(),
+                },
+                color: [colors.embeds[0], colors.embeds[1], colors.embeds[2]],
+                timestamp: new Date(),
+                footer: {
+                    text: `${interaction.user.tag} | ${page + 1} / ${Math.ceil(
+                        (client.shard?.count || 1) / 25
+                    )}`,
+                    iconURL: interaction.user.displayAvatarURL(),
+                },
+            },
+        ],
+
+        components: [
+            {
+                type: "ACTION_ROW",
+                components: [
+                    {
+                        type: "BUTTON",
+                        style: "PRIMARY",
+                        label: lang.components.previous,
+                        disabled: page <= 0,
+                        customId: "stats-previous",
+                    },
+                    {
+                        type: "BUTTON",
+                        style: "PRIMARY",
+                        label: lang.components.next,
+                        disabled:
+                            page + 1 >=
+                            Math.ceil((client.shard?.count || 1) / 25),
+                        customId: "stats-next",
+                    },
+                ],
+            },
+        ],
     };
+
+    let question = await (interaction.replied
+        ? interaction.editReply(messageData)
+        : interaction.deferReply(messageData)
+    ).catch(() => undefined);
+
+    if (question instanceof Message) {
+        let buttonInt = await question
+            .awaitMessageComponent({
+                filter: (int) => int.user.id == interaction.user.id,
+                time: globalInteractionDelay,
+            })
+            .catch(() => undefined);
+
+        switch (buttonInt?.customId) {
+            case "stats-next":
+                statsFunction(client, interaction, page + 1);
+                break;
+            case "stats-previous":
+                statsFunction(client, interaction, page - 1);
+                break;
+        }
+    }
 }
 
 export const command: Command = {
@@ -76,8 +142,6 @@ export const command: Command = {
     guildId: "598814767771156490",
 
     run: async (client, commandInt) => {
-        commandInt.reply({
-            embeds: [await getEmbed(client, commandInt, 0)],
-        });
+        statsFunction(client, commandInt, 0);
     },
 };
