@@ -1,7 +1,8 @@
-import { ApplicationCommandData, Client, CommandInteraction } from "discord.js";
+import { ApplicationCommandData, CommandInteraction } from "discord.js";
+import { SuperClient } from ".";
 
 export interface Command {
     infos: ApplicationCommandData;
 
-    run: (client: Client, interaction: CommandInteraction) => void;
+    run: (client: SuperClient, interaction: CommandInteraction) => void;
 }
