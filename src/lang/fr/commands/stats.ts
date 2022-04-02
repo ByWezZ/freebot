@@ -7,4 +7,9 @@ export default {
             value: "Serveurs: {{guilds}}\nMembres: {{members}}",
         },
     },
+
+    components: {
+        next: "Suivant",
+        previous: "Précédent",
+    },
 };
