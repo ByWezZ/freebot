@@ -129,7 +129,12 @@ async function statsFunction(
             case "stats-previous":
                 statsFunction(client, interaction, page - 1);
                 break;
+
+            default:
+                interaction.editReply({ components: [] });
         }
+    } else {
+        interaction.editReply({ components: [] });
     }
 }
 
