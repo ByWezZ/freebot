@@ -1,11 +1,12 @@
 import { Command } from "../Commands";
 
 export const command: Command = {
-    names: ["ping"],
+    infos: {
+        name: "testCommand",
+        description: "Used to test some of the bot's fonctionnalities",
+    },
 
-    description: "Respond with pong",
-
-    run: (client, message, args) => {
-        message.reply("pong");
+    run: (client, commandInt) => {
+        commandInt.reply("pong");
     },
 };
