@@ -1,4 +1,4 @@
-import config from "./config.json";
+import config from "./configs/config.json";
 import { ShardingManager } from "discord.js";
 
 const manager = new ShardingManager(__dirname + "/bot.js", {
