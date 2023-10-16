@@ -4,7 +4,6 @@ config();
 
 const manager = new ShardingManager(__dirname + "/bot.js", {
     token: process.env.TOKEN as string,
-    totalShards: 15,
 });
 
 manager.on("shardCreate", (shard) =>
