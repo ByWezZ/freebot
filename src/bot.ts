@@ -1,6 +1,7 @@
 import { Client, ClientOptions, Collection, User } from "discord.js";
 import { promises as fs } from "fs";
-import config from "./configs/config.json";
+import { config } from "dotenv";
+config();
 
 import { Command } from "./Command";
 import { DiscordEvent } from "./Event";
@@ -73,4 +74,4 @@ client.on("ready", async () => {
     }
 });
 
-client.login(process.env.FREEBOT || config.token);
+client.login(process.env.TOKEN as string);

@@ -1,8 +1,10 @@
-import config from "./configs/config.json";
 import { ShardingManager } from "discord.js";
+import { config } from "dotenv";
+config();
 
 const manager = new ShardingManager(__dirname + "/bot.js", {
-    token: process.env.FREEBOT || config.token,
+    token: process.env.TOKEN as string,
+    totalShards: 15,
 });
 
 manager.on("shardCreate", (shard) =>

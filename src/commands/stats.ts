@@ -5,8 +5,9 @@ import {
 } from "discord.js";
 import { SuperClient } from "../bot";
 import { Command } from "../Command";
-import { globalInteractionDelay, colors } from "../configs/config.json";
 import path from "path";
+import configs from "../configs/config";
+const { colors, globalInteractionDelay } = configs;
 
 /**
  * @param {SuperClient} client The discord client

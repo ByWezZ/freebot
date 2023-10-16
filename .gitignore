@@ -1,6 +1,4 @@
 node_modules
 dist
 .vscode
-
-# Remove all configs files
-src\/configs\/[^\.]*\.json
+.env
